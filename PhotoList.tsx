@@ -1,11 +1,19 @@
 import React, { useState } from 'react';
 import { View, FlatList, Text, Image, StyleSheet, TextInput, Modal, TouchableOpacity } from 'react-native';
 import PhotoCard from './PhotoCard';
+import { StackNavigationProp } from "@react-navigation/stack";
+import { StackParamList } from "./App";
+import { useNavigation } from "@react-navigation/native";
 
 interface ImageData {
   id: number;
   url: string;
 }
+
+type PhotoListScreenNavigationProp = StackNavigationProp<
+  StackParamList,
+  "PhotoList"
+>;
 
 const imageData: ImageData[] = [];
 for (let i = 1; i < 70; i++) {
@@ -13,16 +21,13 @@ for (let i = 1; i < 70; i++) {
 }
 
 const PhotoList: React.FC = () => {
-  const [searchTerm, setSearchTerm] = useState('');
+  const navigation = useNavigation<PhotoListScreenNavigationProp>();
+
+  const [searchTerm, setSearchTerm] = useState("");
   const [modalVisible, setModalVisible] = useState(false);
-  const [selectedImage, setSelectedImage] = useState('');
+  const [selectedImage] = useState("");
 
-  const handleImagePress = (url: string) => {
-    setSelectedImage(url);
-    setModalVisible(true);
-  };
-
-  const filteredImages = imageData.filter(image =>
+  const filteredImages = imageData.filter((image) =>
     image.id.toString().includes(searchTerm)
   );
 
@@ -37,9 +42,15 @@ const PhotoList: React.FC = () => {
       <FlatList
         data={filteredImages}
         numColumns={3}
-        keyExtractor={item => item.id.toString()}
+        keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
-          <PhotoCard url={item.url} onPress={() => handleImagePress(item.url)} />
+          <TouchableOpacity
+            onPress={() => {
+              navigation.navigate("PhotoCard", { ID: item.id, url: item.url });
+            }}
+          >
+            <Image source={{ uri: item.url }} style={styles.image} />
+          </TouchableOpacity>
         )}
       />
       <Modal
@@ -62,26 +73,31 @@ const PhotoList: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white',
+    backgroundColor: "white",
     padding: 32,
   },
   searchInput: {
     marginBottom: 16,
     padding: 8,
     borderWidth: 1,
-    borderColor: 'gray',
+    borderColor: "gray",
     borderRadius: 8,
   },
   modalContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'black',
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "black",
   },
   modalImage: {
-    width: '80%',
-    height: '80%',
-    resizeMode: 'contain',
+    width: "80%",
+    height: "80%",
+    resizeMode: "contain",
+  },
+  image: {
+    width: 100,
+    height: 100,
+    margin: 4,
   },
 });
 

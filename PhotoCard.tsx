@@ -1,24 +1,53 @@
 import React from 'react';
-import { Image, StyleSheet, TouchableOpacity } from 'react-native';
+import { Image, StyleSheet, TouchableOpacity, View, Text } from 'react-native';
+import { StackParamList } from './App';
+import { RouteProp, useRoute, useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
 
-interface PhotoCardProps {
-  url: string;
-  onPress: () => void;
-}
+type PhotoCardScreenNavigationProp = StackNavigationProp<
+  StackParamList,
+  "PhotoCard"
+>;
+type PhotoCardScreenRouteProp = RouteProp<StackParamList, "PhotoCard">;
 
-const PhotoCard: React.FC<PhotoCardProps> = ({ url, onPress }) => {
+export function PhotoCard() {
+  const navigation = useNavigation<PhotoCardScreenNavigationProp>();
+  const { params } = useRoute<PhotoCardScreenRouteProp>();
+
   return (
-    <TouchableOpacity onPress={onPress}>
-      <Image source={{ uri: url }} style={styles.image} />
-    </TouchableOpacity>
+    <View style={styles.container}>
+      <TouchableOpacity
+        onPress={() => {
+          navigation.navigate("PhotoModal", { ID: params.ID, url: params.url });
+        }}
+      >
+        <Image source={{ uri: params.url.toString() }} style={styles.image} />
+      </TouchableOpacity>
+      <Text style={styles.text}>{params.url.toString()}</Text>
+      <Text>
+        RANDOMrandomRANDOMrandomRANDOMrandomRANDOMrandomRANDOMrandomRANDOMrandomRANDOMrandomRANDOMrandomRANDOMrandomRANDOMrandomRANDOMrandomRANDOMrandomRANDOMrandomRANDOMrandom
+      </Text>
+    </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
   image: {
-    width: 100,
-    height: 100,
+    width: "100%",
+    height: 200,
+    aspectRatio: 16 / 9,
+    resizeMode: "cover",
+    borderRadius: 10,
     margin: 4,
+  },
+  container: {
+    flex: 1,
+    backgroundColor: "#fff",
+    alignItems: "center",
+  },
+  text: {
+    fontSize: 25,
+    fontWeight: "bold",
   },
 });
 
