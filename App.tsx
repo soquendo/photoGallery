@@ -1,20 +1,44 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import React from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { createDrawerNavigator } from '@react-navigation/drawer';
+import PhotoGalleryStack from './PhotoGalleryStack';
+import WeatherNavigator from './navigators/WeatherNavigator';
+import ScannerNavigator from './navigators/ScannerNavigator';
 
-export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
-}
+const Drawer = createDrawerNavigator();
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+const App: React.FC = () => (
+  <NavigationContainer>
+    <Drawer.Navigator
+      initialRouteName="PhotoGallery"
+      screenOptions={{
+        drawerPosition: 'right', // Set the drawer to the right side
+      }}
+    >
+      <Drawer.Screen
+        name="PhotoGallery"
+        component={PhotoGalleryStack}
+        options={{
+          drawerLabel: 'Photo Gallery',
+          headerLeft: () => null, // This removes the button
+          headerTitle: 'Photo Gallery', // Keeps the title
+        }}
+      />
+      <Drawer.Screen
+        name="Weather App"
+        component={WeatherNavigator}
+        options={{ drawerLabel: 'Weather App' }}
+      />
+      <Drawer.Screen
+        name="ScannerApp"
+        component={ScannerNavigator}
+        options={{
+          drawerLabel: 'Scanner App',
+          headerLeft: () => null, // This removes the button for the hidden drawer
+        }}
+      />
+    </Drawer.Navigator>
+  </NavigationContainer>
+);
+
+export default App;
