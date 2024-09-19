@@ -5,6 +5,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { useNavigation } from '@react-navigation/native';
 import { StackParamList } from './PhotoGalleryStack';
 
+
 interface ImageData {
   id: number;
   url: string;
